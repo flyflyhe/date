@@ -1,0 +1,19 @@
+{
+    "name": "he/date",
+    "description": "php simple date",
+    "type": "library",
+    "keywords": ["php date"],
+    "homepage": "https://github.com/flyflyhe/date",
+    "authors": [
+        {
+            "name": "hejinxue",
+            "email": "hejinxue001@163.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "he\\date\\": "./src"
+        }
+    }
+}
