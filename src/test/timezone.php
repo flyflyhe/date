@@ -9,3 +9,5 @@ function d()
 
 echo date('Y-m-d H:i:s');
 d();
+$timezone = new DateTimeZone("Asia/Shanghai");
+echo $timezone->getName();
