@@ -24,12 +24,12 @@ class DateTimeFormat
         $this->setName($formatName);
     }
 
-    public function getName()
+    public function getName():string
     {
         return $this->name;
     }
 
-    public function setName(string $formatName)
+    public function setName(string $formatName):void
     {
         $this->name = $formatName;
     }

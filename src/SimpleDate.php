@@ -4,6 +4,7 @@ namespace he\date;
 use DateTime;
 use DateTimeZone;
 use DateInterval;
+use Exception;
 
 class SimpleDate
 {
@@ -11,19 +12,25 @@ class SimpleDate
 
     protected $dateTimeFormat = null;
 
+    protected $dateTime;
+
     /**
      * SimpleDate constructor.
      * @param DateTimeZone $dateTimeZone
      * @param DateTimeFormat $dateTimeFormat
+     * @param string $time
+     * @throws Exception
      */
-    public function __construct(DateTimeZone $dateTimeZone, DateTimeFormat $dateTimeFormat)
+    public function __construct(DateTimeZone $dateTimeZone, DateTimeFormat $dateTimeFormat, string $time = 'now')
     {
         $this->setDateTimezone($dateTimeZone);
         $this->setDateTimeFormat($dateTimeFormat);
+        $this->dateTime = new DateTime($time);
     }
 
     /**
      * @param DateTimeZone $dateTimeZone
+     * @throws Exception
      */
     public function setDateTimezone(DateTimeZone $dateTimeZone) :void
     {
@@ -56,22 +63,57 @@ class SimpleDate
         return $this->dateTimeFormat;
     }
 
+    public function string():string
+    {
+        return $this->dateTime->format($this->getDateTimeFormat()->getName());
+    }
+
     /**
+     * 调用此函数会影响dateTime保存的时间戳
      * 0 当前月 -1 上一月 1 下一月
      * @param int $pointer
-     * @throws \Exception
+     * @throws Exception
      * @return string
      */
-    public function getOneMonthFirstDay(int $pointer = 0)
+    public function getOneMonthFirstDay(int $pointer = 0):string
     {
-        $dateTime = new DateTime();
+        $dateTime = $this->dateTime;
         if ($pointer !== 0) {
-            $is_add = $pointer > 0 ? true : false;
+            $isAdd = $pointer > 0 ? true : false;
             $dateInterval = new DateInterval('P'.abs($pointer).'M');
 
-            $is_add ? $dateTime->add($dateInterval) : $dateTime->sub($dateInterval);
+            $isAdd ? $dateTime->add($dateInterval) : $dateTime->sub($dateInterval);
         }
 
         return $dateTime->format($this->getDateTimeFormat()->getFirstMonthDayName());
+    }
+
+    /**
+     * 调用此函数会影响dateTime保存的时间戳
+     * @param int $day
+     * @return string
+     * @throws Exception
+     */
+    public function addDay(int $day):string
+    {
+        $dateTime = $this->dateTime;
+        if ($day !== 0) {
+            $isAdd = $day > 0 ? true : false;
+            $dateInterval = new DateInterval('P'.abs($day).'D');
+
+            $isAdd ? $dateTime->add($dateInterval) : $dateTime->sub($dateInterval);
+        }
+
+        return $dateTime->format($this->getDateTimeFormat()->getFirstMonthDayName());
+    }
+
+    public function __destruct()
+    {
+    }
+
+    public static function getDefault():self
+    {
+        return new SimpleDate(DateTimezoneFactory::getDateTimezone(DateTimezoneFactory::ASIA_SHANGHAI), DateTimeFormatFactory::getDateTimeFormat(DateTimeFormat::MYSQL_DATETIME_FORMAT));
+
     }
 }
