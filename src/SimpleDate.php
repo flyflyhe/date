@@ -14,6 +14,8 @@ class SimpleDate
 
     protected $dateTime;
 
+    protected $time;
+
     /**
      * SimpleDate constructor.
      * @param DateTimeZone $dateTimeZone
@@ -25,7 +27,13 @@ class SimpleDate
     {
         $this->setDateTimezone($dateTimeZone);
         $this->setDateTimeFormat($dateTimeFormat);
-        $this->dateTime = new DateTime($time);
+        $this->time = $time;
+        $this->refreshDateTime();
+    }
+
+    public function refreshDateTime()
+    {
+        $this->dateTime = new DateTime($this->time, $this->getDateTimezone());
     }
 
     /**
@@ -35,7 +43,7 @@ class SimpleDate
     public function setDateTimezone(DateTimeZone $dateTimeZone) :void
     {
         #DateTime第一个参数传时间戳等含有时区信息的参数 会导致后一个失去信息失败
-        $this->dateTimezone = new DateTime("now", $dateTimeZone);
+        $this->dateTimezone = $dateTimeZone;
     }
 
 
@@ -85,7 +93,7 @@ class SimpleDate
             $isAdd ? $dateTime->add($dateInterval) : $dateTime->sub($dateInterval);
         }
 
-        return $dateTime->format($this->getDateTimeFormat()->getFirstMonthDayName());
+        return $this->string();
     }
 
     /**
@@ -104,7 +112,7 @@ class SimpleDate
             $isAdd ? $dateTime->add($dateInterval) : $dateTime->sub($dateInterval);
         }
 
-        return $dateTime->format($this->getDateTimeFormat()->getFirstMonthDayName());
+        return $this->string();
     }
 
     public function __destruct()
